@@ -1,5 +1,6 @@
 import React from 'react'
-import { TouchableOpacity, TextInput, SafeAreaView, Text, View, StyleSheet, Image, Dimensions, ScrollView, StatusBar,Button } from 'react-native'
+import { TouchableOpacity, TextInput, SafeAreaView, Text, View, StyleSheet, Image, Dimensions, ScrollView, StatusBar, Button, KeyboardAvoidingView } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlusCircle, faUserCircle, faTimes, faGrinTongueSquint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
@@ -9,9 +10,9 @@ import { Camera, BarCodeScanner, Permissions, CameraRoll, ImagePicker } from 'ex
 
 var { height, width } = Dimensions.get('window')
 const options = {
-  title : "My pic",
-  takePhoto : "Take Photo",
-  choosePhoto : "Choose Photo"
+  title: "My pic",
+  takePhoto: "Take Photo",
+  choosePhoto: "Choose Photo"
 }
 
 class ProfileScreen extends React.Component {
@@ -25,7 +26,7 @@ class ProfileScreen extends React.Component {
       age: '19',
       bio: 'a little bio about myself',
       avatarsrc: null
-      
+
     }
   }
 
@@ -51,13 +52,13 @@ class ProfileScreen extends React.Component {
             height: height,
           }}
           contentPosition="bottom">
-          <SafeAreaView  style={{flex: 1, alignItems: "center", justifyContent: "center"}} 
-          onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout
-          }}>
+          <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            onLayout={(event) => {
+              var { x, y, width, height } = event.nativeEvent.layout
+            }}>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Picture", { page: this })}
-              >
+            >
 
               <Image style={{
                 width: 150,
@@ -119,27 +120,27 @@ class ProfileScreen extends React.Component {
               {this.state.bio}
             </Text>
             <View
-            style ={{
-              marginTop: "9%",
-              marginBottom: "0%",
-            }}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Edit", { page: this })}
-              style= {{ flex: 0.25}}
+              style={{
+                marginTop: "9%",
+                marginBottom: "0%",
+              }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Edit", { page: this })}
+                style={{ flex: 0.25 }}
               >
-              <Image style={{
-                width: 30,
-                height: 30,
+                <Image style={{
+                  width: 30,
+                  height: 30,
 
-                marginHorizontal: width / 2 + 60,
-                // marginTop: "8%",
-                // marginBottom: "40%",
+                  marginHorizontal: width / 2 + 60,
+                  // marginTop: "8%",
+                  // marginBottom: "40%",
 
-              }}
-                source={{ uri: "https://heroeshearth.com/images/icon-edit.png" }}
-              />
+                }}
+                  source={{ uri: "https://heroeshearth.com/images/icon-edit.png" }}
+                />
 
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </SafeAreaView>
         </ImageOverlay>
@@ -156,7 +157,7 @@ class PictureScreen extends React.Component {
   }
 
   getSelectedImages(image) {
-    if (image[0]){
+    if (image[0]) {
       alert(image[0].uri);
     }
   }
@@ -165,7 +166,7 @@ class PictureScreen extends React.Component {
     const lastPage = navigation.getParam('page');
     return (
       <SafeAreaView>
-      {/* style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} */}
+        {/* style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} */}
         <StatusBar
           barStyle="dark-content"
           backgroundColor="black"
@@ -173,7 +174,7 @@ class PictureScreen extends React.Component {
         <TouchableOpacity
           color="#4B9CD3"
           style={{
-            marginTop:"4%",
+            marginTop: "4%",
             marginLeft: "3%",
           }}
           onPress={() => this.props.navigation.goBack()}
@@ -183,37 +184,37 @@ class PictureScreen extends React.Component {
           />
         </TouchableOpacity>
         <View
-        style = {{
-          alignItems: 'center', justifyContent: 'center'
-        }}>
-        <TouchableOpacity
           style={{
-            marginTop:"50%",
-            marginBottom: "0%"
-          }}
-          onPress={() =>
-            this.props.navigation.navigate('Camera')
-           // this.update(lastPage)
-          }>
-          <Text style={{
-            fontSize: 25
+            alignItems: 'center', justifyContent: 'center'
           }}>
-            Open Your Camera</Text>
-        </TouchableOpacity> 
-        <TouchableOpacity
-          style={{
-            marginTop:"0%",
-            marginBottom: "0%"
-          }}
-          onPress={() =>
-            this.props.navigation.navigate('Photo')
-           // this.update(lastPage)
-          }>
-          <Text style={{
-            fontSize: 25
-          }}>
-            Get Photo</Text>
-        </TouchableOpacity> 
+          <TouchableOpacity
+            style={{
+              marginTop: "50%",
+              marginBottom: "0%"
+            }}
+            onPress={() =>
+              this.props.navigation.navigate('Camera')
+              // this.update(lastPage)
+            }>
+            <Text style={{
+              fontSize: 25
+            }}>
+              Open Your Camera</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              marginTop: "20%",
+              marginBottom: "0%"
+            }}
+            onPress={() =>
+              this.props.navigation.navigate('Photo')
+              // this.update(lastPage)
+            }>
+            <Text style={{
+              fontSize: 25
+            }}>
+              Get Photo</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -225,7 +226,7 @@ class EditScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      name:'',
+      name: '',
       userName: '',
       location: '',
       age: '',
@@ -233,6 +234,7 @@ class EditScreen extends React.Component {
       length: 35,
     }
   }
+ 
   updateProfile(lastPage) {
     var name = (this.state.name == '') ? lastPage.state.name : this.state.name
     var user = (this.state.userName == '') ? lastPage.state.userName : this.state.userName
@@ -255,13 +257,23 @@ class EditScreen extends React.Component {
     })
   }
 
+  // _check(bio) {
+  //   if (bio.length <= this.state.bio.length){
+  //     this.setState({bio : bio})
+  //   }
+  // }
+
   render() {
     const { navigation } = this.props;
     const lastPage = navigation.getParam('page');
     var length = this.state.bio.length;
     return (
 
-      <ScrollView>
+      <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={false}
+      extraHeight={110}
+      >
         <View style={[styles.card1, { backgroundColor: 'white' }]}>
           <Text style={styles.title}>Edit Your Profile</Text>
           <Kaede style={styles.input}
@@ -330,14 +342,14 @@ class EditScreen extends React.Component {
           </FloatingLabelInput>
         </View>
         <View>
-          <Text 
-            style = {{
+          <Text
+            style={{
               color: '#aaa',
               fontSize: 10,
               marginLeft: 5
             }}
           >
-            {35-length}/35
+            {35 - length}/35
           </Text>
         </View>
         <View style={styles.container}>
@@ -360,7 +372,6 @@ class EditScreen extends React.Component {
                 alignItems: 'center',
               }}
               onPress={() => this.props.navigation.goBack()}
-            //onPress={() => this.updateList(this.state.text)}
             >
               <Text
                 style={{
@@ -407,45 +418,58 @@ class EditScreen extends React.Component {
               </Text>
             </TouchableOpacity>
           </View>
-          
+
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
-// class PhotoScreen extends React.Component {
-//   state = {
-//     image: null,
-//   };
+class PhotoScreen extends React.Component {
+  state = {
+    photoPermission: null,
+    type: Camera.Constants.Type.back,
+    image: null,
+  };
 
-//   render() {
-//     let { image } = this.state;
+  componentDidMount() {
+    Permissions.check('photo').then(response => {
+      // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+      this.setState({ photoPermission: response })
+    })
+  }
+  render() {
+    let { image } = this.state;
 
-//     return (
-//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//         <Button
-//           title="Pick an image from camera roll"
-//           onPress={this._pickImage}
-//         />
-//         {image &&
-//           <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-//       </View>
-//     );
-//   }
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+          title="Pick an image from camera roll"
+          onPress={this.componentDidMount}
+        />
+        {image &&
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      </View>
+    );
+  }
 
-// //   _pickImage = async () => {
-// //     let result = await ImagePicker.launchImageLibraryAsync({
-// //       allowsEditing: true,
-// //       aspect: [4, 3],
-// //     });
+  _pickImage = async () => {
+    if (this.state.photoPermission == null) {
+      this.authorized
+    }
+    if (this.state.photoPermission == "authorized") {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
 
-// //     console.log(result);
+    console.log(result);
 
-// //     if (!result.cancelled) {
-// //       this.setState({ image: result.uri });
-// //     }
-// //   };
-// }
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  }
+  };
+}
 
 class CameraScreen extends React.Component {
   constructor(props) {
@@ -458,7 +482,7 @@ class CameraScreen extends React.Component {
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    await this.setState({hasCameraPermission: status === 'granted'});
+    await this.setState({ hasCameraPermission: status === 'granted' });
   }
 
   render() {
@@ -472,33 +496,33 @@ class CameraScreen extends React.Component {
     }
     return (
       <SafeAreaView style={styles.container1}>
-         <Camera style={{ flex: 1 }} type={this.state.type}>
-            <View
-              style={{
-                flex: 0.1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}>
-              <View>
+        <Camera style={{ flex: 1 }} type={this.state.type}>
+          <View
+            style={{
+              flex: 0.1,
+              backgroundColor: 'transparent',
+              flexDirection: 'row',
+            }}>
+            <View>
               <TouchableOpacity
                 style={{
-                  
+
                   flex: 1,
-                  
+
                   alignItems: 'center',
                 }}
                 onPress={() => {
                   this.props.navigation.goBack()
                 }}>
-                <FontAwesomeIcon 
-                  icon={ faTimes } size={35} style={{ marginTop: "19%", marginRight: "2%", color: 'white' }}
+                <FontAwesomeIcon
+                  icon={faTimes} size={35} style={{ marginTop: "19%", marginRight: "2%", color: 'white' }}
                 />
               </TouchableOpacity>
-              </View>
-              <View style = {{marginLeft : "60%"}}>
+            </View>
+            <View style={{ marginLeft: "60%" }}>
               <TouchableOpacity
                 style={{
-                  
+
                   flex: 1,
                   alignItems: 'center',
                 }}
@@ -509,30 +533,30 @@ class CameraScreen extends React.Component {
                       : Camera.Constants.Type.back,
                   });
                 }}>
-                <FontAwesomeIcon 
-                  icon={ faSyncAlt } size={35} style={{ marginTop: "10%", marginLeft: "50%", color: 'white' }}
+                <FontAwesomeIcon
+                  icon={faSyncAlt} size={35} style={{ marginTop: "10%", marginLeft: "50%", color: 'white' }}
                 />
               </TouchableOpacity>
-              </View>
             </View>
-            <View style ={{
-              marginTop: "100%"
-            }}>
+          </View>
+          <View style={{
+            marginTop: "100%"
+          }}>
             <TouchableOpacity
-                style={{
-                  marginTop : "50%",
-                  flex: 0,
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  CameraRoll.getPhotos(params)
-                }}>
-                <FontAwesomeIcon 
-                  icon={ faTimes } size={35} style={{ marginLeft: "0%", color: 'white' }}
-                />
-              </TouchableOpacity>
-            </View>
-          </Camera>
+              style={{
+                marginTop: "50%",
+                flex: 0,
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                CameraRoll.getPhotos(params)
+              }}>
+              <FontAwesomeIcon
+                icon={faTimes} size={35} style={{ marginLeft: "0%", color: 'white' }}
+              />
+            </TouchableOpacity>
+          </View>
+        </Camera>
       </SafeAreaView>
     );
   }
@@ -623,7 +647,7 @@ export const ProfileStack = createStackNavigator(
       screen: ProfileScreen,
       navigationOptions: {
         header: null,
-      },  
+      },
     },
     Picture: {
       screen: PictureScreen,
@@ -634,21 +658,21 @@ export const ProfileStack = createStackNavigator(
     Camera: {
       screen: CameraScreen,
     },
-    // Photo: {
-    //   screen: PhotoScreen,
-      
-    // }
+    Photo: {
+      screen: PhotoScreen,
+
+    }
   },
   {
     mode: 'modal',
     headerMode: 'none',
   },
-  { 
+  {
     navigationOptions: {
       headerVisible: false,
-  }
+    }
   },
 
-  
+
 )
 

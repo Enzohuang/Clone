@@ -6,11 +6,21 @@ import { SearchBar, Input, Header, ListItem } from 'react-native-elements';
 import Icon from 'react-native-fontawesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Ionicons } from '@expo/vector-icons';
-import { faAmbulance } from '@fortawesome/free-solid-svg-icons';
+import { faAmbulance, faCloudMeatball } from '@fortawesome/free-solid-svg-icons';
+import App from './App';
 
 
 var {height, width} = Dimensions.get('window')
 var likes = 0
+var pressed = true
+var follower = true
+var clearbadge = false
+
+SecondClassFunction=(clearbadge)=>{
+ 
+  Alert.alert(clearbadge);
+
+}
 
 
 const alllist = [
@@ -60,10 +70,10 @@ class LogoTitle extends React.Component {
 
 class NotificationsScreen extends React.Component {
   
-  
+
   
   constructor(props) {
-    super(props);
+    super(props)
     this.state = { text: 'Useless Placeholder',
     loading: false,      
     data: [],      
@@ -71,7 +81,10 @@ class NotificationsScreen extends React.Component {
     data: [
       {key: 'First'},
       {key: 'Last'},
+      {Follow: 'Follow Back'},
+      {Following: 'Following'}
     ]
+  
     
   };
 
@@ -168,15 +181,39 @@ renderItem = ({ item }) => (
     leftAvatar={{ source: { uri: item.avatar_url }}}
     onPress={() => this.props.navigation.navigate('Profile')}
     //badge={{ value: likes, textStyle: { color: 'white' }, containerStyle: { marginTop: -20 } }}
+
+
+
+
+
     rightIcon={
+      <TouchableOpacity 
+      onPress={(pressed) => 
+        {follower = true,
+          pressed = true
+        }
+     
+
+        
       
-        <Ionicons
-        name =  {"ios-person-add"} 
-        color= {"#4B9CD3"}
-        size = {25}
-        onPress={() => alert('You Accepted the Follow Request')}
+      }
+  >
+
+      <Text 
+      style={pressed?styles.newbutton: styles.button}> 
+      
+      {follower?this.state.Following:this.state.Follow}
+      </Text>
+  </TouchableOpacity>
+
+
+        // <Ionicons
+        // name =  {"ios-person-add"} 
+        // color= {"#4B9CD3"}
+        // size = {25}
+        // onPress={() => alert('You Accepted the Follow Request')}
        
-        />
+        // />
       }
      
   
@@ -190,12 +227,19 @@ renderItem = ({ item }) => (
 
   render() {
 
+    clearbadge = true
     
     return (
+
+     
+      
+
+
       <SafeAreaView style={{ flex: 1, justifyContent: "center" }}
       
      onLayout={(event) => {
        var {x, y, width, height} = event.nativeEvent.layout
+       
        //console.log(width)
        //console.log(height)
      }}
@@ -252,6 +296,35 @@ export const NotificationsStack = createStackNavigator(
     
   }
 );
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 10,
+    backgroundColor: 'white',
+    borderRadius: 7,
+    borderColor: 'white',
+    borderWidth: 1,
+    color: '#4B9CD3',
+    fontSize: 12,
+    overflow: 'hidden',
+    padding: 12,
+    width: 100,
+    textAlign:'center',
+  },
+  newbutton: {
+    marginTop: 10,
+    backgroundColor: '#4B9CD3',
+    borderRadius: 7,
+    borderColor: 'white',
+    borderWidth: 1,
+    color: 'white',
+    fontSize: 12,
+    overflow: 'hidden',
+    padding: 12,
+    width: 100,
+    textAlign:'center',
+  }
+})
 
 
 

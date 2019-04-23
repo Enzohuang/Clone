@@ -21,10 +21,13 @@ import { ForgotScreen } from './Forgot.js'
 
 
 
+
 class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
     this._bootstrapAsync();
+   
+
   }
 
   // Fetch the token from storage then navigate to our appropriate place
@@ -53,7 +56,8 @@ class IconWithBadge extends React.Component {
     return (
       <View style={{ width: 24, height: 24, margin: 5 }}>
         <Ionicons name={name} size={size} color={color} />
-        
+       
+      
         {badgeCount > 0 && (
           <View
             style={{
@@ -80,10 +84,13 @@ class IconWithBadge extends React.Component {
 }
 
 
+
+
 const NotificationIconWithBadge = props => {
   //something = this;
   // You should pass down the badgeCount in some other ways like context, redux, mobx or event emitters.
   return <IconWithBadge {...props} badgeCount={3} />;
+  
  
 };
 

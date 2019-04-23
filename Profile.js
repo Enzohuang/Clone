@@ -1,5 +1,6 @@
 import React from 'react'
-import { TouchableOpacity, TextInput, SafeAreaView, Text, View, StyleSheet, Image, Dimensions, ScrollView, StatusBar, Button } from 'react-native'
+import { TouchableOpacity, TextInput, SafeAreaView, Text, View, StyleSheet, Image, Dimensions, ScrollView, StatusBar, Button, KeyboardAvoidingView } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlusCircle, faUserCircle, faTimes, faGrinTongueSquint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
@@ -233,6 +234,7 @@ class EditScreen extends React.Component {
       length: 35,
     }
   }
+ 
   updateProfile(lastPage) {
     var name = (this.state.name == '') ? lastPage.state.name : this.state.name
     var user = (this.state.userName == '') ? lastPage.state.userName : this.state.userName
@@ -255,13 +257,23 @@ class EditScreen extends React.Component {
     })
   }
 
+  // _check(bio) {
+  //   if (bio.length <= this.state.bio.length){
+  //     this.setState({bio : bio})
+  //   }
+  // }
+
   render() {
     const { navigation } = this.props;
     const lastPage = navigation.getParam('page');
     var length = this.state.bio.length;
     return (
 
-      <ScrollView>
+      <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={false}
+      extraHeight={110}
+      >
         <View style={[styles.card1, { backgroundColor: 'white' }]}>
           <Text style={styles.title}>Edit Your Profile</Text>
           <Kaede style={styles.input}
@@ -360,7 +372,6 @@ class EditScreen extends React.Component {
                 alignItems: 'center',
               }}
               onPress={() => this.props.navigation.goBack()}
-            //onPress={() => this.updateList(this.state.text)}
             >
               <Text
                 style={{
@@ -409,43 +420,56 @@ class EditScreen extends React.Component {
           </View>
 
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
-// class PhotoScreen extends React.Component {
-//   state = {
-//     image: null,
-//   };
+class PhotoScreen extends React.Component {
+  state = {
+    photoPermission: null,
+    type: Camera.Constants.Type.back,
+    image: null,
+  };
 
-//   render() {
-//     let { image } = this.state;
+  componentDidMount() {
+    Permissions.check('photo').then(response => {
+      // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+      this.setState({ photoPermission: response })
+    })
+  }
+  render() {
+    let { image } = this.state;
 
-//     return (
-//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//         <Button
-//           title="Pick an image from camera roll"
-//           onPress={this._pickImage}
-//         />
-//         {image &&
-//           <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-//       </View>
-//     );
-//   }
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+          title="Pick an image from camera roll"
+          onPress={this.componentDidMount}
+        />
+        {image &&
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      </View>
+    );
+  }
 
-// //   _pickImage = async () => {
-// //     let result = await ImagePicker.launchImageLibraryAsync({
-// //       allowsEditing: true,
-// //       aspect: [4, 3],
-// //     });
+  _pickImage = async () => {
+    if (this.state.photoPermission == null) {
+      this.authorized
+    }
+    if (this.state.photoPermission == "authorized") {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
 
-// //     console.log(result);
+    console.log(result);
 
-// //     if (!result.cancelled) {
-// //       this.setState({ image: result.uri });
-// //     }
-// //   };
-// }
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  }
+  };
+}
 
 class CameraScreen extends React.Component {
   constructor(props) {
@@ -499,7 +523,7 @@ class CameraScreen extends React.Component {
               <TouchableOpacity
                 style={{
 
-                  flex: 1.5,
+                  flex: 1,
                   alignItems: 'center',
                 }}
                 onPress={() => {
@@ -634,10 +658,10 @@ export const ProfileStack = createStackNavigator(
     Camera: {
       screen: CameraScreen,
     },
-    // Photo: {
-    //   screen: PhotoScreen,
+    Photo: {
+      screen: PhotoScreen,
 
-    // }
+    }
   },
   {
     mode: 'modal',

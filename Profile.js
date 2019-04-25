@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlusCircle, faUserCircle, faTimes, faGrinTongueSquint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import ImageOverlay from "react-native-image-overlay";
 import { Sae, Kaede, Fumi, Madoka } from 'react-native-textinput-effects';
+import CameraRollPicker from 'react-native-camera-roll-picker';
 import { Camera, BarCodeScanner, Permissions, CameraRoll, ImagePicker } from 'expo';
 
 var { height, width } = Dimensions.get('window')
@@ -155,11 +156,8 @@ class PictureScreen extends React.Component {
     lastPage.Load_New_Image();
     this.props.navigation.navigate('Profile')
   }
-
-  getSelectedImages(image) {
-    if (image[0]) {
-      alert(image[0].uri);
-    }
+  state = {
+    url: ''
   }
   render() {
     const { navigation } = this.props;
@@ -207,7 +205,7 @@ class PictureScreen extends React.Component {
               marginBottom: "0%"
             }}
             onPress={() =>
-              this.props.navigation.navigate('Photo')
+              this.props.navigation.navigate('Photo', {page: lastPage, thisPage: this})
               // this.update(lastPage)
             }>
             <Text style={{
@@ -215,6 +213,7 @@ class PictureScreen extends React.Component {
             }}>
               Get Photo</Text>
           </TouchableOpacity>
+          {this.state.url ? <Image source = {{uri : this.state.url}}/> : null}
         </View>
       </SafeAreaView>
     );
@@ -425,51 +424,51 @@ class EditScreen extends React.Component {
   }
 }
 class PhotoScreen extends React.Component {
+  
   state = {
-    photoPermission: null,
-    type: Camera.Constants.Type.back,
-    image: null,
+    imageUrl: null,
   };
 
-  componentDidMount() {
-    Permissions.check('photo').then(response => {
-      // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-      this.setState({ photoPermission: response })
-    })
-  }
-  render() {
-    let { image } = this.state;
-
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          title="Pick an image from camera roll"
-          onPress={this.componentDidMount}
-        />
-        {image &&
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-      </View>
-    );
-  }
-
-  _pickImage = async () => {
-    if (this.state.photoPermission == null) {
-      this.authorized
-    }
-    if (this.state.photoPermission == "authorized") {
-    let result = await ImagePicker.launchImageLibraryAsync({
+  pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
     });
-
-    console.log(result);
-
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.onChangeText('imageUrl', result.uri)
     }
-  }
   };
+  myImage(image, lastPage) {
+    this.setState({imageUrl: image[0].uri})
+    this.props.navigation.goBack();
+    alert(image[0].uri);
+  }
+
+  render() {
+    const { imageUrl } = this.state;
+    const profilePage = this.props.navigation.getParam('page');
+    const lastPage = this.props.navigation.getParam('thisPage');
+    return (
+      <View style = {{flex : 1, alignItems: 'center'}}>
+        
+      <Text sytle = {{fontSize : 30, color : '#4B9CD3'}}>Pull Down to Cancel</Text>
+      <CameraRollPicker
+      callback = {this.myImage.bind(this)}
+      />
+      {/* <Image source={{ uri: profilePage.imageUri }} style={{ width: 200, height: 200 }}/>
+        <Button
+          title="Pick an image from camera roll"
+          onPress={this.pickImage}
+        />
+        {imageUrl ?
+          (<Image source={{ uri: imageUrl }} style={{ width: 200, height: 200 }}/>) : 
+          (<Image source={{ uri: profilePage.imageUri }} style={{ width: 200, height: 200 }}/>)
+          } */}
+      </View>
+    );
+  }
 }
+
 
 class CameraScreen extends React.Component {
   constructor(props) {
